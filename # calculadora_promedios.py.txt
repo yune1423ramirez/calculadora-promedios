@@ -1,0 +1,127 @@
+# calculadora_promedios.py
+
+def ingresar_calificaciones():
+    materias = []
+    calificaciones = []
+
+    print("\nIngrese las materias y sus calificaciones.")
+    print("Para terminar, responda 'n' cuando se le pregunte.\n")
+
+    while True:
+        materia = input("Ingrese el nombre de la materia: ").strip()
+
+        if materia == "":
+            print("El nombre de la materia no puede estar vacío.")
+            continue
+
+        while True:
+            try:
+                nota = float(input("Ingrese la calificación (0 a 10): "))
+                if 0 <= nota <= 10:
+                    break
+                else:
+                    print("La nota debe estar entre 0 y 10.")
+            except ValueError:
+                print("Entrada inválida. Ingrese un número.")
+
+        materias.append(materia)
+        calificaciones.append(nota)
+
+        # Validación mejorada de s/n
+        while True:
+            continuar = input("¿Desea agregar otra materia? (s/n): ").lower()
+            if continuar in ["s", "n"]:
+                break
+            else:
+                print("Ingrese solo 's' o 'n'.")
+
+        if continuar == "n":
+            break
+
+    return materias, calificaciones
+
+
+def calcular_promedio(calificaciones):
+    """
+    Calcula el promedio de una lista.
+    Retorna 0 si no hay datos.
+    """
+    if len(calificaciones) == 0:
+        return 0
+    return sum(calificaciones) / len(calificaciones)
+
+
+def determinar_estado(calificaciones, umbral=5.0):
+    aprobadas = []
+    reprobadas = []
+
+    for i in range(len(calificaciones)):
+        if calificaciones[i] >= umbral:
+            aprobadas.append(i)
+        else:
+            reprobadas.append(i)
+
+    return aprobadas, reprobadas
+
+
+def encontrar_extremos(calificaciones):
+    if len(calificaciones) == 0:
+        return None, None
+
+    max_idx = 0
+    min_idx = 0
+
+    for i in range(len(calificaciones)):
+        if calificaciones[i] > calificaciones[max_idx]:
+            max_idx = i
+        if calificaciones[i] < calificaciones[min_idx]:
+            min_idx = i
+
+    return max_idx, min_idx
+
+
+# Función extra (mejora sugerida)
+def mostrar_resumen(materias, notas):
+    promedio = calcular_promedio(notas)
+    aprobadas, reprobadas = determinar_estado(notas)
+    max_idx, min_idx = encontrar_extremos(notas)
+
+    print("\n===== RESUMEN FINAL =====")
+
+    print("\nMaterias y calificaciones:")
+    for i in range(len(materias)):
+        print(f"{materias[i]}: {notas[i]}")
+
+    print(f"\nPromedio general: {promedio:.2f}")
+
+    print("\nMaterias aprobadas:")
+    for i in aprobadas:
+        print(f"- {materias[i]} ({notas[i]})")
+
+    print("\nMaterias reprobadas:")
+    for i in reprobadas:
+        print(f"- {materias[i]} ({notas[i]})")
+
+    print("\nMejor calificación:")
+    print(f"{materias[max_idx]} con {notas[max_idx]}")
+
+    print("\nPeor calificación:")
+    print(f"{materias[min_idx]} con {notas[min_idx]}")
+
+
+def main():
+    print("=== CALCULADORA DE PROMEDIOS ESCOLARES ===")
+
+    materias, notas = ingresar_calificaciones()
+
+    if len(materias) == 0:
+        print("No se ingresaron materias.")
+        return
+
+    mostrar_resumen(materias, notas)
+
+    print("\nGracias por usar la calculadora. ¡Hasta luego!")
+
+
+if __name__ == "__main__":
+    main()
